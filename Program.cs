@@ -1,3 +1,6 @@
+using ETicketWebApp.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace ETicketWebApp
 {
   public class Program
@@ -5,6 +8,9 @@ namespace ETicketWebApp
     public static void Main(string[] args)
     {
       var builder = WebApplication.CreateBuilder(args);
+
+      //DbContext Configuration
+      builder.Services.AddDbContext<AppDbContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
       // Add services to the container.
       builder.Services.AddControllersWithViews();
@@ -30,6 +36,8 @@ namespace ETicketWebApp
           name: "default",
           pattern: "{controller=Home}/{action=Index}/{id?}");
 
+      //Seed Data if not present into database
+      AppDbInitializer.Seed(app);
       app.Run();
     }
   }
